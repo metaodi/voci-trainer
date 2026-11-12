@@ -1,0 +1,17 @@
+{
+  "name": "Voci-Trainer",
+  "short_name": "Voci",
+  "description": "Vokabeln lernen mit Karteikarten – Englisch und Französisch",
+  "lang": "de-CH",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f3ff",
+  "theme_color": "#5b4fe0",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

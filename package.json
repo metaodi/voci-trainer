@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "check-lektionen": "node scripts/check-lektionen.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "icons": "node scripts/erzeuge-icons.ts"
   },
   "engines": {
     "node": ">=24"

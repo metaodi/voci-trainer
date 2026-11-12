@@ -1,5 +1,6 @@
 import './styles.css';
 import { ladeEinstellungen, wendeDarstellungAn } from './lib/einstellungen.ts';
+import { registriereServiceWorker } from './lib/pwa.ts';
 import { stimmenVorladen } from './lib/sprache.ts';
 import { einstellungenScreen } from './screens/einstellungen.ts';
 import { fertigScreen } from './screens/fertig.ts';
@@ -34,3 +35,4 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => wend
 stimmenVorladen();
 window.addEventListener('hashchange', zeichne);
 zeichne();
+registriereServiceWorker();
