@@ -87,7 +87,7 @@ in der CI – fehlerhafte Lektionen werden nie veröffentlicht.
 3. Claude zeigt eine Tabelle aller erkannten Einträge und markiert unsichere Stellen. Korrigieren, dann OK geben.
 4. Claude legt einen Branch an, schreibt CSV und `lektionen.json`, prüft alles und öffnet einen Pull Request.
 5. Pull Request ansehen und mergen. Wenige Minuten später ist die Lektion online; in der App erscheint
-   „Neue Wörter verfügbar“.
+   „Neue Version verfügbar“.
 
 Genauso lassen sich Lektionen ergänzen oder korrigieren, Prüfungsdaten setzen und Lektionen archivieren – einfach in
 Worten sagen, was geändert werden soll. Die Regeln dafür stehen in [`CLAUDE.md`](CLAUDE.md). Fotos werden nie
@@ -110,8 +110,8 @@ anpassen.
 - **iPhone/iPad (Safari):** Teilen → „Zum Home-Bildschirm“.
 - **Android (Chrome):** Menü → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“.
 
-Nach dem ersten Öffnen ist alles offline verfügbar. Neue Lektionen werden geladen, sobald das Gerät wieder online ist;
-dann erscheint der Hinweis „Neue Wörter verfügbar – Neu laden“.
+Nach dem ersten Öffnen ist alles offline verfügbar. Neue Lektionen und App-Updates werden geladen, sobald das Gerät
+wieder online ist; dann erscheint der Hinweis „Neue Version verfügbar – Neu laden“.
 
 ## Lernstand und Datenschutz
 

@@ -60,4 +60,4 @@ git switch -c lektion/<id>
    - Prüfungsdatum (falls gesetzt)
    - Auffälligkeiten: unsichere Stellen und wie sie entschieden wurden
 6. Link zum PR zeigen und erwähnen: Nach dem Merge wird die App automatisch aktualisiert; auf dem Gerät erscheint
-   „Neue Wörter verfügbar“.
+   „Neue Version verfügbar“.
