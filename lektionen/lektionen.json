@@ -1,0 +1,15 @@
+[
+  {
+    "id": "en-unit-1",
+    "name": "Unit 1",
+    "sprache": "en",
+    "datei": "en/unit-1.csv"
+  },
+  {
+    "id": "fr-unite-1",
+    "name": "Unité 1",
+    "sprache": "fr",
+    "datei": "fr/unite-1.csv",
+    "pruefung": "2026-11-20"
+  }
+]
