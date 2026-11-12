@@ -2,7 +2,7 @@
 import { lektionen } from 'virtual:lektionen';
 import type { Lektion, Sprache } from '../../scripts/lektionen-lib.ts';
 import { ladeEinstellungen, speichereEinstellungen } from '../lib/einstellungen.ts';
-import { ladeDaten, lektionsFortschritt, lerntageInFolge, lokalesDatum } from '../lib/lernstand.ts';
+import { ladeDaten, lektionsFortschritt, lerntageInFolge, lokalesDatum, schwierigeKarten } from '../lib/lernstand.ts';
 import type { RichtungsWahl } from '../lib/runde.ts';
 import { h, icon } from '../ui/dom.ts';
 import { geheZu, starteSitzung, zustand } from '../zustand.ts';
@@ -43,6 +43,8 @@ export function startScreen(root: HTMLElement): void {
   for (const id of [...auswahl]) if (!lektionen.some((l) => l.id === id)) auswahl.delete(id);
 
   const leiste = h('div', { class: 'start-leiste' });
+  // Platz unten frei halten, damit die Leiste keine Lektion verdeckt (ihre Höhe hängt von den Knöpfen ab)
+  new ResizeObserver(() => document.body.style.setProperty('--leiste-hoehe', `${leiste.offsetHeight}px`)).observe(leiste);
 
   function lektionsKarte(l: Lektion): HTMLElement {
     const f = lektionsFortschritt(daten, l);
@@ -143,6 +145,8 @@ export function startScreen(root: HTMLElement): void {
       ['gemischt', 'Gemischt'],
     ];
     const anzahl = gewaehlt.reduce((n, l) => n + l.eintraege.length, 0);
+    const ids = gewaehlt.map((l) => l.id);
+    const schwer = schwierigeKarten(daten, gewaehlt, einst.richtung).length;
     leiste.replaceChildren(
       h(
         'div',
@@ -165,13 +169,19 @@ export function startScreen(root: HTMLElement): void {
         ),
       ),
       h(
-        'button',
-        {
-          class: 'haupt-knopf',
-          type: 'button',
-          onclick: () => starteSitzung(gewaehlt.map((l) => l.id), einst.richtung),
-        },
-        `Los geht's · ${anzahl} Karten`,
+        'div',
+        { class: 'start-knoepfe' },
+        h('button', { class: 'haupt-knopf', type: 'button', onclick: () => starteSitzung(ids, einst.richtung) }, `Los geht's · ${anzahl} Karten`),
+        schwer > 0 &&
+          h(
+            'button',
+            {
+              class: 'zweit-knopf',
+              type: 'button',
+              onclick: () => starteSitzung(ids, einst.richtung, schwierigeKarten(daten, gewaehlt, einst.richtung)),
+            },
+            `Nur die schwierigen (${schwer})`,
+          ),
       ),
     );
   }

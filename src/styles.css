@@ -88,7 +88,8 @@ body {
     max(var(--abstand), env(safe-area-inset-left));
 }
 body.mit-leiste #app {
-  padding-bottom: 190px;
+  /* --leiste-hoehe setzt die Startseite je nach Inhalt der Leiste */
+  padding-bottom: calc(var(--leiste-hoehe, 174px) + 16px);
 }
 h1 {
   font-size: 1.7rem;
@@ -423,6 +424,14 @@ summary:focus-visible {
 }
 .start-leiste.sichtbar {
   transform: none;
+}
+.start-knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.start-knoepfe > * {
+  flex: 1 1 200px;
 }
 .start-leiste > * {
   width: 100%;
