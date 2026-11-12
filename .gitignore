@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+Thumbs.db
+# Fotos von Voci-Seiten werden nie committet
+fotos/
+*.jpg
+*.jpeg
+*.png
+*.heic
+!public/**/*.png
