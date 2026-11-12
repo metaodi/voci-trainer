@@ -44,6 +44,11 @@ function vorlesenKnopf(karte: Karte): HTMLButtonElement | null {
   );
 }
 
+/** Farbiger Rand beim Bewerten – liegt auf beiden Seiten, damit er sich mit der Karte dreht. */
+function swipeFarbe(): HTMLElement {
+  return h('div', { class: 'swipe-farbe', 'aria-hidden': 'true' });
+}
+
 function kartenInhalt(karte: Karte): HTMLElement {
   const { eintrag, sprache, richtung } = karte;
   const fremdZuerst = richtung === 'fremd-de';
@@ -58,6 +63,7 @@ function kartenInhalt(karte: Karte): HTMLElement {
     h('div', { class: `sprach-chip ${fremdZuerst ? sprache : 'de'}` }, frageSprache),
     h('p', { class: laengenKlasse(frage), lang: fremdZuerst ? sprache : 'de' }, frage),
     fremdZuerst && vorlesenKnopf(karte),
+    swipeFarbe(),
   );
   const hinten = h(
     'div',
@@ -67,6 +73,7 @@ function kartenInhalt(karte: Karte): HTMLElement {
     h('p', { class: 'frage-klein', lang: fremdZuerst ? sprache : 'de' }, frage),
     eintrag.notiz && h('p', { class: 'notiz' }, eintrag.notiz),
     vorlesenKnopf(karte),
+    swipeFarbe(),
   );
   return h('div', { class: 'karte' }, vorne, hinten);
 }
@@ -114,7 +121,7 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
 
   let huelle: HTMLElement | null = null;
   let karteEl: HTMLElement | null = null;
-  let farbe: HTMLElement | null = null;
+  let farben: HTMLElement[] = [];
   let swipeAus: (() => void) | null = null;
   let beschaeftigt = false;
   let aktiv = true;
@@ -127,15 +134,16 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
   }
 
   function zeigeFarbe(anteil: number) {
-    if (!farbe) return;
     if (anteil === 0) {
-      farbe.style.opacity = '0';
+      for (const farbe of farben) farbe.style.opacity = '0';
       return;
     }
     const e = ergebnisFuer(anteil < 0 ? 'links' : 'rechts');
-    farbe.className = `swipe-farbe ${e}`;
-    farbe.replaceChildren(h('span', { class: 'swipe-label' }, icon(e === 'gewusst' ? 'haken' : 'nochmals'), e === 'gewusst' ? 'Gewusst' : 'Nochmals'));
-    farbe.style.opacity = String(Math.min(1, Math.abs(anteil)));
+    for (const farbe of farben) {
+      farbe.className = `swipe-farbe ${e}`;
+      farbe.replaceChildren(h('span', { class: 'swipe-label' }, icon(e === 'gewusst' ? 'haken' : 'nochmals'), e === 'gewusst' ? 'Gewusst' : 'Nochmals'));
+      farbe.style.opacity = String(Math.min(1, Math.abs(anteil)));
+    }
   }
 
   function aktualisiereZaehler() {
@@ -200,13 +208,13 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
     if (!karte || !blatt) return;
     const el = blatt.firstElementChild as HTMLElement;
     karteEl = kartenInhalt(karte);
-    farbe = h('div', { class: 'swipe-farbe', 'aria-hidden': 'true' });
+    farben = [...karteEl.querySelectorAll<HTMLElement>('.swipe-farbe')];
     el.className = 'karte-huelle';
     el.setAttribute('tabindex', '0');
     el.setAttribute('role', 'button');
     el.setAttribute('aria-label', 'Karte umdrehen');
     setzeLage(el, 0);
-    el.replaceChildren(karteEl, farbe);
+    el.replaceChildren(karteEl);
     huelle = el;
   }
 
@@ -271,7 +279,8 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
     const el = huelle;
     swipeAus?.();
     swipeAus = null;
-    huelle = karteEl = farbe = null;
+    huelle = karteEl = null;
+    farben = [];
     merkeErgebnis(karte, e);
     const stelle = bewerte(runde, e);
     let animation: Promise<void>;
