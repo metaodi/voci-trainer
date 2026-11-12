@@ -75,8 +75,9 @@ describe('Runde', () => {
       const zufall = seeded(seed);
       const r = neueRunde(karten(10), zufall);
       const erste = aktuelleKarte(r)!;
-      bewerte(r, 'nochmals', zufall);
+      const zurueck = bewerte(r, 'nochmals', zufall);
       const pos = r.warteschlange.findIndex((i) => r.karten[i] === erste);
+      expect(zurueck).toBe(pos);
       expect(pos).toBeGreaterThanOrEqual(3);
       expect(pos).toBeLessThanOrEqual(6);
       expect(r.warteschlange).toHaveLength(10);
@@ -86,8 +87,13 @@ describe('Runde', () => {
   it('reiht ans Ende ein, wenn nur noch wenige Karten übrig sind', () => {
     const r = neueRunde(karten(3), seeded());
     const erste = aktuelleKarte(r)!;
-    bewerte(r, 'nochmals', () => 0.99);
+    expect(bewerte(r, 'nochmals', () => 0.99)).toBe(2);
     expect(r.karten[r.warteschlange[2]]).toBe(erste);
+  });
+
+  it('gibt bei "Gewusst" keine Stelle zurück', () => {
+    const r = neueRunde(karten(3), seeded());
+    expect(bewerte(r, 'gewusst')).toBeNull();
   });
 
   it('zeigt die letzte Karte so lange, bis sie gewusst ist', () => {

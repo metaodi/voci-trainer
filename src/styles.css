@@ -459,10 +459,29 @@ summary:focus-visible {
   place-items: center;
   min-height: 0;
 }
-.karte-huelle {
+/* Stapel aus Blättern: alle liegen in derselben Zelle, --tiefe 0 ist die oberste Karte. */
+.blatt {
+  --versatz: 9px;
+  grid-area: 1 / 1;
   position: relative;
   width: min(100%, 520px);
-  height: min(100%, 440px);
+  height: min(calc(100% - 3 * var(--versatz)), 440px);
+  transform-origin: 50% 100%;
+  transform: translateY(calc((var(--tiefe, 0) - 1.5) * var(--versatz))) scale(calc(1 - var(--tiefe, 0) * 0.045));
+  transition:
+    transform 0.35s ease,
+    opacity 0.3s ease 0.1s;
+}
+.blatt.versteckt {
+  opacity: 0;
+}
+.blatt.unterwegs {
+  z-index: 20 !important;
+}
+.karte-huelle {
+  position: relative;
+  width: 100%;
+  height: 100%;
   perspective: 1400px;
   touch-action: none;
   user-select: none;
@@ -478,13 +497,22 @@ summary:focus-visible {
 .karte-huelle.fliegt {
   transition: transform 0.28s ease-in;
 }
-.karte-huelle.neu {
-  animation: auftauchen 0.28s ease-out;
+.karte-huelle.leer {
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  box-shadow: var(--schatten-klein);
+  cursor: default;
 }
-@keyframes auftauchen {
+.karte-huelle.leer > * {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.karte-huelle > .karte {
+  animation: inhalt-ein 0.2s ease-out;
+}
+@keyframes inhalt-ein {
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(12px);
   }
 }
 .karte {
