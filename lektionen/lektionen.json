@@ -11,5 +11,12 @@
     "sprache": "fr",
     "datei": "fr/unite-1.csv",
     "pruefung": "2026-11-20"
+  },
+  {
+    "id": "fr-unite-2",
+    "name": "Unité 2",
+    "sprache": "fr",
+    "datei": "fr/unite-2.csv",
+    "pruefung": "2026-11-13"
   }
 ]
