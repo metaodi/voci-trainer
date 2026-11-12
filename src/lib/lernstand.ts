@@ -3,7 +3,7 @@
 import type { Lektion } from '../../scripts/lektionen-lib.ts';
 import { lies, schreibe } from './ablage.ts';
 import { ladeEinstellungen, STANDARD, type Einstellungen } from './einstellungen.ts';
-import { eintragSchluessel, type Ergebnis, type Karte, type Richtung } from './runde.ts';
+import { eintragSchluessel, type Ergebnis, type Karte, type Richtung, type RichtungsWahl, type Zufall } from './runde.ts';
 
 export interface Stand {
   /** Wie oft insgesamt als gewusst bewertet. */
@@ -13,6 +13,8 @@ export interface Stand {
   letztes: Ergebnis;
   /** ISO-Zeitstempel der letzten Bewertung. */
   zuletzt: string;
+  /** Beim letzten Üben (erster Versuch in der Runde) gewusst? Fehlt bei älterem Lernstand. */
+  aufAnhieb?: boolean;
   /** Reserviert für Spaced Repetition (Leitner-Fach). */
   stufe?: number;
   /** Reserviert für Spaced Repetition (JJJJ-MM-TT). */
@@ -51,8 +53,11 @@ export function leereDaten(): Daten {
   return { version: 1, lernstand: {}, lerntage: [] };
 }
 
-/** Trägt eine Bewertung ein (verändert `daten`). */
-export function trageEin(daten: Daten, schluessel: string, ergebnis: Ergebnis, jetzt: Date = new Date()): void {
+/**
+ * Trägt eine Bewertung ein (verändert `daten`). `ersterVersuch`: erste Bewertung der Karte in dieser Runde –
+ * nur sie bestimmt, ob die Karte auf Anhieb gewusst war.
+ */
+export function trageEin(daten: Daten, schluessel: string, ergebnis: Ergebnis, jetzt: Date = new Date(), ersterVersuch = false): void {
   const alt = daten.lernstand[schluessel];
   daten.lernstand[schluessel] = {
     ...alt,
@@ -60,6 +65,7 @@ export function trageEin(daten: Daten, schluessel: string, ergebnis: Ergebnis, j
     nochmals: (alt?.nochmals ?? 0) + (ergebnis === 'nochmals' ? 1 : 0),
     letztes: ergebnis,
     zuletzt: jetzt.toISOString(),
+    ...(ersterVersuch ? { aufAnhieb: ergebnis === 'gewusst' } : {}),
   };
   const tag = lokalesDatum(jetzt);
   if (!daten.lerntage.includes(tag)) {
@@ -93,6 +99,35 @@ export function lektionsFortschritt(daten: Daten, lektion: Lektion): LektionsFor
     }
   }
   return { gewusst, geuebt, gesamt: lektion.eintraege.length * RICHTUNGEN.length, zuletzt };
+}
+
+/**
+ * Schwierig = beim letzten Üben nicht auf Anhieb gewusst. Bei älterem Lernstand ohne diese Angabe:
+ * mindestens einmal "Nochmals".
+ */
+export function istSchwierig(s: Stand | undefined): boolean {
+  if (!s) return false;
+  if (typeof s.aufAnhieb === 'boolean') return !s.aufAnhieb;
+  return s.nochmals > 0;
+}
+
+/**
+ * Karten der schwierigen Einträge in den gewählten Richtungen. Bei "gemischt" kommt jeder Eintrag
+ * höchstens einmal vor, in einer Richtung, in der er schwierig ist.
+ */
+export function schwierigeKarten(daten: Daten, lektionen: readonly Lektion[], wahl: RichtungsWahl, zufall: Zufall = Math.random): Karte[] {
+  const richtungen = wahl === 'gemischt' ? RICHTUNGEN : [wahl];
+  const karten: Karte[] = [];
+  for (const l of lektionen) {
+    for (const eintrag of l.eintraege) {
+      const schluessel = eintragSchluessel(l.id, eintrag.fremdsprache);
+      const schwer = richtungen.filter((r) => istSchwierig(daten.lernstand[standSchluessel(schluessel, r)]));
+      if (schwer.length === 0) continue;
+      const richtung = schwer[Math.floor(zufall() * schwer.length)];
+      karten.push({ schluessel, lektionId: l.id, sprache: l.sprache, eintrag, richtung });
+    }
+  }
+  return karten;
 }
 
 function tagDavor(tag: string): string {
@@ -180,9 +215,9 @@ export function speichereDaten(d: Daten): void {
   schreibe(SCHLUESSEL, d);
 }
 
-export function merkeErgebnis(karte: Karte, ergebnis: Ergebnis): void {
+export function merkeErgebnis(karte: Karte, ergebnis: Ergebnis, ersterVersuch: boolean): void {
   const d = ladeDaten();
-  trageEin(d, standSchluessel(karte.schluessel, karte.richtung), ergebnis);
+  trageEin(d, standSchluessel(karte.schluessel, karte.richtung), ergebnis, new Date(), ersterVersuch);
   speichereDaten(d);
 }
 

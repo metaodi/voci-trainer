@@ -281,7 +281,7 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
     swipeAus = null;
     huelle = karteEl = null;
     farben = [];
-    merkeErgebnis(karte, e);
+    merkeErgebnis(karte, e, runde.nochmals[index] === 0);
     const stelle = bewerte(runde, e);
     let animation: Promise<void>;
     if (stelle === null) {

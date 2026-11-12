@@ -34,13 +34,14 @@ export function lektionNachId(id: string): Lektion | undefined {
   return lektionen.find((l) => l.id === id);
 }
 
-export function starteSitzung(lektionIds: string[], wahl: RichtungsWahl): void {
+/** Startet eine Runde mit allen Karten der Lektionen – oder nur mit den übergebenen (z.B. den schwierigen). */
+export function starteSitzung(lektionIds: string[], wahl: RichtungsWahl, nurKarten?: Karte[]): void {
   const gewaehlt = lektionIds.map(lektionNachId).filter((l): l is Lektion => l !== undefined);
   zustand.sitzung = {
     lektionIds,
     wahl,
-    runde: neueRunde(erstelleKarten(gewaehlt, wahl)),
-    nurSchwierige: false,
+    runde: neueRunde(nurKarten ?? erstelleKarten(gewaehlt, wahl)),
+    nurSchwierige: nurKarten !== undefined,
   };
   geheZu('#/ueben');
 }
