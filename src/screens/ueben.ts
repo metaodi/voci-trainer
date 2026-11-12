@@ -11,7 +11,7 @@ import { geheZu, zustand } from '../zustand.ts';
 const SPRACHNAME = { en: 'Englisch', fr: 'Französisch' } as const;
 
 /** So lange bleibt die Lösung sichtbar, wenn die Karte erst beim Bewerten umgedreht wird (inkl. Dreh-Animation). */
-const LOESUNG_ZEIGEN_MS = 1600;
+const LOESUNG_ZEIGEN_MS = 1100;
 
 /** So viele Blätter des Stapels sind sichtbar (oberste Karte mitgezählt). */
 const STAPEL_SICHTBAR = 4;
