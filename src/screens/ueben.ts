@@ -165,6 +165,7 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
     stoppeVorlesen();
     const seite = seiteFuer(e);
     zeigeFarbe(seite === 'links' ? -1 : 1);
+    navigator.vibrate?.(e === 'gewusst' ? 12 : [8, 50, 8]);
     await wegfliegen(huelle, seite);
     merkeErgebnis(karte, e);
     bewerte(runde, e);

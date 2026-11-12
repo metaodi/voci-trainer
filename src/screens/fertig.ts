@@ -1,6 +1,8 @@
 // Zusammenfassung am Ende einer Runde.
 import { fortschritt, istFertig, schwierigste, sterne } from '../lib/runde.ts';
+import { ladeDaten, lerntageInFolge } from '../lib/lernstand.ts';
 import { h, icon } from '../ui/dom.ts';
+import { konfetti } from '../ui/konfetti.ts';
 import { geheZu, starteMitKarten, zustand } from '../zustand.ts';
 
 const TITEL = { 3: 'Super gemacht!', 2: 'Gut gemacht!', 1: 'Geschafft!' } as const;
@@ -9,6 +11,9 @@ const TEXT = {
   2: 'Du kennst schon viele Wörter.',
   1: 'Dranbleiben lohnt sich – jede Runde hilft.',
 } as const;
+
+/** Konfetti nur einmal pro Runde (nicht beim Zurücknavigieren). */
+const gefeiert = new WeakSet<object>();
 
 export function fertigScreen(root: HTMLElement): void {
   const sitzung = zustand.sitzung;
@@ -21,6 +26,7 @@ export function fertigScreen(root: HTMLElement): void {
   const schwer = schwierigste(r);
   const { gesamt } = fortschritt(r);
   const aufAnhieb = gesamt - schwer.length;
+  const serie = lerntageInFolge(ladeDaten().lerntage);
 
   root.append(
     h(
@@ -34,6 +40,7 @@ export function fertigScreen(root: HTMLElement): void {
       h('h1', {}, TITEL[anzahlSterne]),
       h('p', { class: 'fertig-text' }, TEXT[anzahlSterne]),
       h('p', { class: 'statistik' }, h('strong', {}, String(aufAnhieb)), ` von ${gesamt} ${gesamt === 1 ? 'Karte' : 'Karten'} auf Anhieb gewusst`),
+      serie.tage > 1 && h('p', { class: 'serie heute' }, icon('flamme'), `${serie.tage} Lerntage in Folge`),
       schwer.length > 0 &&
         h(
           'section',
@@ -72,4 +79,8 @@ export function fertigScreen(root: HTMLElement): void {
       ),
     ),
   );
+  if (!gefeiert.has(r)) {
+    gefeiert.add(r);
+    setTimeout(() => konfetti(anzahlSterne * 50), 250);
+  }
 }
