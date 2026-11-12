@@ -9,6 +9,9 @@ import { geheZu, zustand } from '../zustand.ts';
 
 const SPRACHNAME = { en: 'Englisch', fr: 'Französisch' } as const;
 
+/** So lange bleibt die Lösung sichtbar, wenn die Karte erst beim Bewerten umgedreht wird (inkl. Dreh-Animation). */
+const LOESUNG_ZEIGEN_MS = 1600;
+
 function gegenteil(e: Ergebnis): Ergebnis {
   return e === 'gewusst' ? 'nochmals' : 'gewusst';
 }
@@ -110,6 +113,7 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
   let farbe: HTMLElement | null = null;
   let swipeAus: (() => void) | null = null;
   let beschaeftigt = false;
+  let aktiv = true;
 
   function umdrehen() {
     if (!karteEl) return;
@@ -166,18 +170,40 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
     const seite = seiteFuer(e);
     zeigeFarbe(seite === 'links' ? -1 : 1);
     navigator.vibrate?.(e === 'gewusst' ? 12 : [8, 50, 8]);
+    if (karteEl && !karteEl.classList.contains('umgedreht')) {
+      // Noch nicht umgedreht: Karte zurück in die Mitte, umdrehen und die Lösung kurz zeigen.
+      setzeLage(huelle, 0);
+      umdrehen();
+      await loesungZeigen();
+      if (!aktiv) return;
+    }
     await wegfliegen(huelle, seite);
     merkeErgebnis(karte, e);
     bewerte(runde, e);
     beschaeftigt = false;
-    zeigeKarte();
+    if (aktiv) zeigeKarte();
+  }
+
+  /** Wartet, bis die Lösung lange genug sichtbar war – ein Tippen oder eine Taste geht sofort weiter. */
+  function loesungZeigen(): Promise<void> {
+    return new Promise((ok) => {
+      const weiter = () => {
+        clearTimeout(zeit);
+        document.removeEventListener('pointerdown', weiter, true);
+        document.removeEventListener('keydown', weiter, true);
+        ok();
+      };
+      const zeit = setTimeout(weiter, LOESUNG_ZEIGEN_MS);
+      document.addEventListener('pointerdown', weiter, true);
+      document.addEventListener('keydown', weiter, true);
+    });
   }
 
   const tasten = (ev: KeyboardEvent) => {
     if (ev.target instanceof HTMLButtonElement && ev.target !== huelle) return;
     if (ev.key === ' ' || ev.key === 'Enter') {
       ev.preventDefault();
-      umdrehen();
+      if (!beschaeftigt) umdrehen();
     } else if (ev.key === 'ArrowLeft') {
       void bewerteAktuelle(ergebnisFuer('links'));
     } else if (ev.key === 'ArrowRight') {
@@ -190,6 +216,7 @@ export function uebenScreen(root: HTMLElement): (() => void) | void {
 
   zeigeKarte();
   return () => {
+    aktiv = false;
     document.removeEventListener('keydown', tasten);
     swipeAus?.();
     stoppeVorlesen();
