@@ -6,7 +6,7 @@ function zeigeHinweis(wartend: ServiceWorker): void {
   const hinweis = h(
     'div',
     { class: 'update-hinweis', role: 'status' },
-    h('span', {}, 'Neue Wörter verfügbar'),
+    h('span', {}, 'Neue Version verfügbar'),
     h(
       'button',
       {
