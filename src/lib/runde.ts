@@ -81,18 +81,20 @@ export function istFertig(r: Runde): boolean {
 /**
  * Bewertet die aktuelle Karte. "Nochmals"-Karten werden einige Karten später
  * wieder eingereiht (oder ans Ende, wenn weniger übrig sind), bis sie gewusst sind.
+ * Gibt bei "Nochmals" die neue Stelle der Karte in der Warteschlange zurück, sonst null.
  */
-export function bewerte(r: Runde, ergebnis: Ergebnis, zufall: Zufall = Math.random): void {
+export function bewerte(r: Runde, ergebnis: Ergebnis, zufall: Zufall = Math.random): number | null {
   const i = r.warteschlange.shift();
-  if (i === undefined) return;
+  if (i === undefined) return null;
   if (ergebnis === 'gewusst') {
     r.erledigt[i] = true;
-    return;
+    return null;
   }
   r.nochmals[i]++;
   const abstand = ABSTAND_MIN + Math.floor(zufall() * (ABSTAND_MAX - ABSTAND_MIN + 1));
   const position = Math.min(abstand, r.warteschlange.length);
   r.warteschlange.splice(position, 0, i);
+  return position;
 }
 
 export function fortschritt(r: Runde): { gewusst: number; gesamt: number } {
