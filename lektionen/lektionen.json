@@ -3,7 +3,8 @@
     "id": "en-unit-1",
     "name": "Unit 1",
     "sprache": "en",
-    "datei": "en/unit-1.csv"
+    "datei": "en/unit-1.csv",
+    "archiviert": true
   },
   {
     "id": "fr-unite-1-vocabulaire-plus",
