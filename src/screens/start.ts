@@ -35,6 +35,50 @@ function sortiere(liste: Lektion[]): Lektion[] {
   return [...mitPruefung, ...rest];
 }
 
+/** Modal mit allen Einträgen einer Lektion als Tabelle (Fremdsprache / Deutsch). */
+function zeigeEintraege(l: Lektion): void {
+  const dialog = h(
+    'dialog',
+    { class: `eintraege-dialog ${l.sprache}`, 'aria-labelledby': 'eintraege-titel' },
+    h(
+      'div',
+      { class: 'dialog-kopf' },
+      h('h2', { id: 'eintraege-titel' }, l.name, h('span', { class: 'dialog-unter' }, `${SPRACHNAME[l.sprache]} · ${l.eintraege.length} Einträge`)),
+      h('button', { class: 'rund-knopf', type: 'button', 'aria-label': 'Schliessen', onclick: () => dialog.close() }, icon('schliessen')),
+    ),
+    h(
+      'div',
+      { class: 'dialog-inhalt' },
+      h(
+        'table',
+        { class: 'eintraege-tabelle' },
+        h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, SPRACHNAME[l.sprache]), h('th', { scope: 'col' }, 'Deutsch'))),
+        h(
+          'tbody',
+          {},
+          l.eintraege.map((e) =>
+            h(
+              'tr',
+              {},
+              h('td', { lang: l.sprache }, e.fremdsprache, e.notiz && h('span', { class: 'eintrag-notiz' }, e.notiz)),
+              h('td', { lang: 'de' }, e.deutsch),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+  // Klick auf den Hintergrund schliesst das Modal
+  dialog.addEventListener('click', (ev) => {
+    if (ev.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', () => dialog.remove());
+  // Beim Seitenwechsel (z.B. Zurück-Taste) nicht offen stehen lassen
+  window.addEventListener('hashchange', () => dialog.close(), { once: true });
+  document.body.append(dialog);
+  dialog.showModal();
+}
+
 export function startScreen(root: HTMLElement): void {
   const daten = ladeDaten();
   const einst = ladeEinstellungen();
@@ -51,24 +95,41 @@ export function startScreen(root: HTMLElement): void {
     const prozent = f.gesamt ? Math.round((f.gewusst / f.gesamt) * 100) : 0;
     const tage = l.pruefung ? tageBis(l.pruefung) : -1;
     const pruefung = pruefungsText(tage);
-    const knopf = h(
+    const karte = h('div', { class: `lektion ${l.sprache}${auswahl.has(l.id) ? ' gewaehlt' : ''}` });
+    const waehlen = h(
       'button',
       {
-        class: `lektion ${l.sprache}`,
+        class: 'lektion-waehlen',
         type: 'button',
         'aria-pressed': String(auswahl.has(l.id)),
         onclick: () => {
           if (auswahl.has(l.id)) auswahl.delete(l.id);
           else auswahl.add(l.id);
-          knopf.setAttribute('aria-pressed', String(auswahl.has(l.id)));
+          waehlen.setAttribute('aria-pressed', String(auswahl.has(l.id)));
+          karte.classList.toggle('gewaehlt', auswahl.has(l.id));
           zeichneLeiste();
         },
       },
       h('span', { class: 'lektion-kopf' }, h('span', { class: 'lektion-name' }, l.name), h('span', { class: 'auswahl-kreis', 'aria-hidden': 'true' }, icon('haken'))),
+    );
+    waehlen.setAttribute('aria-label', `${l.name}, ${SPRACHNAME[l.sprache]}, ${prozent} Prozent gewusst${pruefung ? ', ' + pruefung : ''}`);
+    karte.append(
+      waehlen,
       h(
         'span',
         { class: 'lektion-meta' },
-        `${l.eintraege.length} Einträge`,
+        h(
+          'button',
+          {
+            class: 'eintraege-knopf',
+            type: 'button',
+            'aria-haspopup': 'dialog',
+            'aria-label': `${l.eintraege.length} Einträge von ${l.name} anzeigen`,
+            onclick: () => zeigeEintraege(l),
+          },
+          `${l.eintraege.length} Einträge`,
+          icon('pfeil'),
+        ),
         pruefung && h('span', { class: `pruefung${tage <= 3 ? ' bald' : ''}` }, icon('kalender'), pruefung),
       ),
       h(
@@ -78,8 +139,7 @@ export function startScreen(root: HTMLElement): void {
         h('span', { class: 'prozent' }, f.geuebt === 0 ? 'neu' : `${prozent} %`),
       ),
     );
-    knopf.setAttribute('aria-label', `${l.name}, ${SPRACHNAME[l.sprache]}, ${prozent} Prozent gewusst${pruefung ? ', ' + pruefung : ''}`);
-    return h('li', {}, knopf);
+    return h('li', {}, karte);
   }
 
   function gruppe(sprache: Sprache, liste: Lektion[]): HTMLElement | null {
