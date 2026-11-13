@@ -9,13 +9,15 @@
     "id": "fr-unite-1-vocabulaire-plus",
     "name": "Unité 1 – Vocabulaire plus",
     "sprache": "fr",
-    "datei": "fr/unite-1-vocabulaire-plus.csv"
+    "datei": "fr/unite-1-vocabulaire-plus.csv",
+    "archiviert": true
   },
   {
     "id": "fr-unite-1",
     "name": "Unité 1",
     "sprache": "fr",
-    "datei": "fr/unite-1.csv"
+    "datei": "fr/unite-1.csv",
+    "archiviert": true
   },
   {
     "id": "fr-unite-2-vocabulaire-plus",
