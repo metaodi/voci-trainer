@@ -6,27 +6,27 @@
     "datei": "en/unit-1.csv"
   },
   {
-    "id": "fr-unite-1",
-    "name": "Unité 1",
-    "sprache": "fr",
-    "datei": "fr/unite-1.csv"
-  },
-  {
-    "id": "fr-unite-2",
-    "name": "Unité 2",
-    "sprache": "fr",
-    "datei": "fr/unite-2.csv"
-  },
-  {
     "id": "fr-unite-1-vocabulaire-plus",
     "name": "Unité 1 – Vocabulaire plus",
     "sprache": "fr",
     "datei": "fr/unite-1-vocabulaire-plus.csv"
   },
   {
+    "id": "fr-unite-1",
+    "name": "Unité 1",
+    "sprache": "fr",
+    "datei": "fr/unite-1.csv"
+  },
+  {
     "id": "fr-unite-2-vocabulaire-plus",
     "name": "Unité 2 – Vocabulaire plus",
     "sprache": "fr",
     "datei": "fr/unite-2-vocabulaire-plus.csv"
+  },
+  {
+    "id": "fr-unite-2",
+    "name": "Unité 2",
+    "sprache": "fr",
+    "datei": "fr/unite-2.csv"
   }
 ]
