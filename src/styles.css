@@ -298,7 +298,9 @@ summary:focus-visible {
   gap: 12px;
 }
 .lektion {
+  position: relative;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -319,10 +321,30 @@ summary:focus-visible {
 .lektion.fr {
   --akzent: var(--fr);
 }
-.lektion:active {
+.lektion:has(.lektion-waehlen:active) {
   transform: scale(0.98);
 }
-.lektion[aria-pressed='true'] {
+/* Der Auswahl-Knopf deckt die ganze Karte ab (::after), nur „Einträge“ liegt darüber */
+.lektion-waehlen {
+  all: unset;
+  display: block;
+  cursor: pointer;
+}
+.lektion-waehlen::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: -3px;
+  border-radius: var(--radius);
+}
+.lektion-waehlen:focus-visible {
+  outline: none;
+}
+.lektion-waehlen:focus-visible::after {
+  outline: 3px solid var(--primaer);
+  outline-offset: 3px;
+}
+.lektion.gewaehlt {
   border-color: var(--akzent);
   background: color-mix(in srgb, var(--akzent) 8%, var(--flaeche));
 }
@@ -350,7 +372,7 @@ summary:focus-visible {
   width: 18px;
   height: 18px;
 }
-.lektion[aria-pressed='true'] .auswahl-kreis {
+.lektion.gewaehlt .auswahl-kreis {
   background: var(--akzent);
   border-color: var(--akzent);
   color: #fff;
@@ -362,6 +384,31 @@ summary:focus-visible {
   gap: 6px 12px;
   color: var(--text-2);
   font-size: 0.95rem;
+}
+.eintraege-knopf {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin: -6px -8px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--akzent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.eintraege-knopf .icon {
+  width: 1em;
+  height: 1em;
+}
+.eintraege-knopf:hover,
+.eintraege-knopf:active {
+  background: var(--flaeche-2);
 }
 .pruefung {
   display: inline-flex;
@@ -860,6 +907,92 @@ summary:focus-visible {
 .version {
   text-align: center;
   font-size: 0.8rem;
+  color: var(--text-2);
+}
+
+/* ---------- Modal: Einträge einer Lektion ---------- */
+.eintraege-dialog {
+  width: min(100% - 24px, 560px);
+  max-height: min(100dvh - 48px, 760px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--flaeche);
+  color: var(--text);
+  box-shadow: var(--schatten);
+  overflow: hidden;
+}
+.eintraege-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.eintraege-dialog.en {
+  --akzent: var(--en);
+}
+.eintraege-dialog.fr {
+  --akzent: var(--fr);
+}
+.eintraege-dialog::backdrop {
+  background: rgb(20 19 28 / 0.55);
+}
+.dialog-kopf {
+  flex: none;
+  box-shadow: inset 0 6px 0 var(--akzent);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 16px 12px 20px;
+  border-bottom: 1px solid var(--rand);
+}
+.dialog-kopf h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+.dialog-unter {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.dialog-kopf .rund-knopf {
+  box-shadow: none;
+  background: var(--flaeche-2);
+}
+.dialog-inhalt {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 20px 16px;
+}
+.eintraege-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.eintraege-tabelle th {
+  position: sticky;
+  top: 0;
+  background: var(--flaeche);
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-2);
+  padding: 10px 8px 6px 0;
+}
+.eintraege-tabelle td {
+  padding: 8px 8px 8px 0;
+  border-top: 1px solid var(--rand);
+  vertical-align: top;
+  width: 50%;
+}
+.eintraege-tabelle td:first-child {
+  font-weight: 700;
+}
+.eintraege-tabelle .eintrag-notiz {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--text-2);
 }
 
