@@ -46,7 +46,8 @@ git switch -c lektion/<id>
 ```
 
 1. CSV `lektionen/<sprache>/<name>.csv` schreiben (UTF-8, `;`, Kopfzeile `fremdsprache;deutsch;typ;notiz`).
-2. Eintrag in `lektionen/lektionen.json` **am Ende** anhängen (mit `pruefung`, falls angegeben).
+2. Eintrag in `lektionen/lektionen.json` **am Ende** anhängen (mit `pruefung`, falls angegeben). Zusatzlektionen
+   wie „Vocabulaire plus“ stattdessen direkt **vor** die zugehörige Lektion setzen (siehe `CLAUDE.md`).
 3. `npm run check-lektionen` ausführen; Fehler beheben, bis alles grün ist. Optional `npm test`.
 4. Nur die Lektionsdateien committen – **keine Fotos**:
    ```bash

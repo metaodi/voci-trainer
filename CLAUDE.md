@@ -52,6 +52,9 @@ tests/                     Tests
 - `datei`: muss im Ordner der Sprache liegen und gleich heissen wie die id ohne Sprach-Präfix (`fr/unite-3.csv`).
 - `pruefung` (optional): ISO-Datum `JJJJ-MM-TT`. `archiviert` (optional): `true` blendet die Lektion auf der Startseite aus.
 - Neue Lektionen werden **ans Ende** des Arrays angehängt (die App zeigt die neuesten zuerst).
+- Ausnahme: Eine Zusatzlektion zu einer bestehenden Unit (z.B. „Unité 3 – Vocabulaire plus“) kommt **direkt vor**
+  die zugehörige Lektion ins Array. So steht sie in der App direkt unter ihr. Die Reihenfolge im Array darf jederzeit
+  geändert werden, der Lernstand hängt nur an der id.
 
 CSV-Dateien: UTF-8, Trennzeichen `;`, Kopfzeile genau `fremdsprache;deutsch;typ;notiz`.
 
