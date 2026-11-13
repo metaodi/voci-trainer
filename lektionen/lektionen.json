@@ -30,5 +30,11 @@
     "name": "Unité 2",
     "sprache": "fr",
     "datei": "fr/unite-2.csv"
+  },
+  {
+    "id": "en-unit-2",
+    "name": "Unit 2",
+    "sprache": "en",
+    "datei": "en/unit-2.csv"
   }
 ]
