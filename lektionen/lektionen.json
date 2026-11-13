@@ -17,5 +17,11 @@
     "sprache": "fr",
     "datei": "fr/unite-2.csv",
     "pruefung": "2026-11-13"
+  },
+  {
+    "id": "fr-unite-1-vocabulaire-plus",
+    "name": "Unité 1 – Vocabulaire plus",
+    "sprache": "fr",
+    "datei": "fr/unite-1-vocabulaire-plus.csv"
   }
 ]
