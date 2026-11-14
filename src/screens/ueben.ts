@@ -54,13 +54,14 @@ function kartenInhalt(karte: Karte): HTMLElement {
   const fremdZuerst = richtung === 'fremd-de';
   const frage = fremdZuerst ? eintrag.fremdsprache : eintrag.deutsch;
   const antwort = fremdZuerst ? eintrag.deutsch : eintrag.fremdsprache;
-  const frageSprache = fremdZuerst ? SPRACHNAME[sprache] : 'Deutsch';
+  // Bei Deutsch → Fremdsprache steht die Zielsprache schon auf der Vorderseite, damit klar ist, was erwartet wird.
+  const frageSprache = fremdZuerst ? SPRACHNAME[sprache] : `Deutsch → ${SPRACHNAME[sprache]}`;
   const antwortSprache = fremdZuerst ? 'Deutsch' : SPRACHNAME[sprache];
 
   const vorne = h(
     'div',
     { class: 'seite vorne' },
-    h('div', { class: `sprach-chip ${fremdZuerst ? sprache : 'de'}` }, frageSprache),
+    h('div', { class: `sprach-chip ${sprache}` }, frageSprache),
     h('p', { class: laengenKlasse(frage), lang: fremdZuerst ? sprache : 'de' }, frage),
     fremdZuerst && vorlesenKnopf(karte),
     swipeFarbe(),
@@ -75,7 +76,8 @@ function kartenInhalt(karte: Karte): HTMLElement {
     vorlesenKnopf(karte),
     swipeFarbe(),
   );
-  return h('div', { class: 'karte' }, vorne, hinten);
+  // Die ganze Karte trägt die Farbe ihrer Fremdsprache (beide Seiten).
+  return h('div', { class: `karte ${sprache}` }, vorne, hinten);
 }
 
 export function uebenScreen(root: HTMLElement): (() => void) | void {

@@ -580,6 +580,12 @@ summary:focus-visible {
 .karte.umgedreht {
   transform: rotateY(180deg);
 }
+.karte.en {
+  --sprache: var(--en);
+}
+.karte.fr {
+  --sprache: var(--fr);
+}
 .seite {
   position: absolute;
   inset: 0;
@@ -590,7 +596,8 @@ summary:focus-visible {
   gap: 12px;
   padding: 56px 24px 64px;
   border-radius: var(--radius);
-  background: var(--flaeche);
+  border: 3px solid color-mix(in srgb, var(--sprache, var(--rand)) 60%, transparent);
+  background: color-mix(in srgb, var(--sprache, var(--flaeche)) 6%, var(--flaeche));
   box-shadow: var(--schatten);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -599,7 +606,7 @@ summary:focus-visible {
 }
 .seite.hinten {
   transform: rotateY(180deg);
-  background: color-mix(in srgb, var(--primaer) 7%, var(--flaeche));
+  background: color-mix(in srgb, var(--sprache, var(--primaer)) 12%, var(--flaeche));
 }
 .karte.umgedreht .vorne,
 .karte:not(.umgedreht) .hinten {
