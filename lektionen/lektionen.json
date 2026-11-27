@@ -40,5 +40,17 @@
     "sprache": "en",
     "datei": "en/unit-2.csv",
     "pruefung": "2026-11-18"
+  },
+  {
+    "id": "fr-unite-3-vocabulaire-plus",
+    "name": "Unité 3 – Vocabulaire plus",
+    "sprache": "fr",
+    "datei": "fr/unite-3-vocabulaire-plus.csv"
+  },
+  {
+    "id": "fr-unite-3",
+    "name": "Unité 3",
+    "sprache": "fr",
+    "datei": "fr/unite-3.csv"
   }
 ]
