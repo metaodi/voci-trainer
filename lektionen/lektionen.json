@@ -24,13 +24,15 @@
     "id": "fr-unite-2-vocabulaire-plus",
     "name": "Unité 2 – Vocabulaire plus",
     "sprache": "fr",
-    "datei": "fr/unite-2-vocabulaire-plus.csv"
+    "datei": "fr/unite-2-vocabulaire-plus.csv",
+    "archiviert": true
   },
   {
     "id": "fr-unite-2",
     "name": "Unité 2",
     "sprache": "fr",
-    "datei": "fr/unite-2.csv"
+    "datei": "fr/unite-2.csv",
+    "archiviert": true
   },
   {
     "id": "en-unit-2",
